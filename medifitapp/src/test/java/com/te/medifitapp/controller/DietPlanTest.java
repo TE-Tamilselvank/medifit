@@ -1,6 +1,7 @@
 package com.te.medifitapp.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -16,12 +17,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.te.medifitapp.bean.MedifitApp;
+import com.te.medifitapp.bean.DietPlan;
 import com.te.medifitapp.service.MedifitService;
 
 @WebMvcTest(MedifitController.class)
 @RunWith(SpringRunner.class)
-public class Medifit {
+public class DietPlanTest {
 
 	@Autowired
 	MockMvc mvc;
@@ -31,18 +32,23 @@ public class Medifit {
 
 	@MockBean
 	private MedifitService service;
+	
 
 	@Test
 	public void testGetData() throws Exception {
-		MedifitApp app = new MedifitApp();
-		app.setUserName("tamil124");
-		app.setName("tamilselvan");
-		Mockito.when(service.getData(app.getUserName())).thenReturn(app);
+		DietPlan app = new DietPlan();
+		app.setId(1234);
+		app.setWheyProtein("musclepower");
+		
+		Mockito.when(service.register(app)).thenReturn(app);
 		String json = mapper.writeValueAsString(app);
 		System.out.println(json);
-		mvc.perform(get("/getData/tamil124").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+		mvc.perform(post("/dietregister").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
 				.content(json).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(jsonPath("$.data.name", Matchers.equalTo("tamilselvan")));
+				.andExpect(jsonPath("$.data.wheyProtein", Matchers.equalTo("musclepower")));
 
 	}
+
+	
+	
 }
